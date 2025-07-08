@@ -43,7 +43,6 @@ const account2 = {
 
 const accounts = [account1, account2];
 
-
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -69,3 +68,77 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+// STATES
+let isSorted = false;
+
+//updateUI
+containerApp.style.opacity = 1;
+
+const displayBalance = account => {
+  labelBalance.innerHTML = account.movements.reduce((acc, cur) => acc + cur, 0);
+};
+
+displayBalance(account1);
+
+const displaySumIn = account => {
+  labelSumIn.innerHTML = account.movements
+    .filter(val => val > 0)
+    .reduce((acc, cur) => acc + cur, 0);
+};
+
+displaySumIn(account1);
+
+const displaySumOut = account => {
+  labelSumOut.innerHTML = account.movements
+    .filter(val => val < 0)
+    .reduce((acc, cur) => acc + cur, 0);
+};
+
+displaySumOut(account1);
+
+const displaySumInterest = account => {
+  labelSumInterest.innerHTML =
+    account.movements.reduce((acc, cur) => acc + cur, 0) *
+    (account.interestRate / 100);
+};
+
+displaySumInterest(account1);
+
+const displayMovement = account => {
+  containerMovements.innerHTML = '';
+  const accMovements = isSorted
+    ? account.movements.toSorted((a, b) => a - b)
+    : account.movements;
+  accMovements.forEach((mov, i) => {
+    const movDate = new Date(account.movementsDates[i]);
+    containerMovements.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="movements__row">
+          <div class="movements__type 
+          ${
+            mov > 0 ? 'movements__type--deposit' : 'movements__type--withdrawal'
+          }
+          movements__type--deposit">${i + 1} ${
+        mov > 0 ? 'deposit' : 'withdrawal'
+      }</div>
+
+          <div class="movements__date">
+           ${movDate.getDate()}/${
+        movDate.getMonth() + 1
+      }/${movDate.getFullYear()} 
+           </div>
+<div class="movements__value">${mov}</div>
+        </div>
+        `
+    );
+  });
+};
+
+displayMovement(account1);
+
+// BUTTON FUNCTIONALITIES
+btnSort.addEventListener('click', function () {
+  isSorted = !isSorted;
+  displayMovement(account1);
+});
