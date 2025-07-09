@@ -72,6 +72,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // STATES
 let isSorted = false;
 let currentAccount;
+let countdownTime = 10;
 
 //updateUI
 const displayBalance = account => {
@@ -140,6 +141,42 @@ const resetInput = function (inputLeft, inputRight) {
   inputRight.blur();
 };
 
+// CLOCK AND DATE
+const dateFunction = function () {
+  const currentDate = new Date();
+  labelDate.innerHTML = `${currentDate.getDate()}/${
+    currentDate.getMonth() + 1
+  }/${currentDate.getFullYear()}, ${currentDate
+    .getHours()
+    .toString()
+    .padStart(2, '0')}:${currentDate
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}:${currentDate.getSeconds().toString().padStart(2, '0')}`;
+};
+
+// TIMER
+const timer = function () {
+  let countdownMinute = Math.trunc(countdownTime / 60)
+    .toString()
+    .padStart(2, '0');
+  let countdownSecond = (countdownTime % 60).toString().padStart(2, '0');
+  labelTimer.innerHTML = `${countdownMinute}:${countdownSecond}`;
+  countdownTime--;
+  console.log('test');
+};
+
+const countdownTimer = function () {
+  timer();
+  const countdown = setInterval(() => {
+    timer();
+    if (countdownTime === -1) {
+      clearInterval(countdown);
+      containerApp.style.opacity = 0;
+    }
+  }, 1000);
+};
+
 // LOGIN FUNCTIONALITY
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -149,13 +186,14 @@ btnLogin.addEventListener('click', function (e) {
         acc.owner.split(' ')[1][0]
       }`.toLowerCase() === inputLoginUsername.value
   );
-
-  // console.log(currentAccount);
   if (currentAccount.pin === Number(inputLoginPin.value)) {
     resetInput(inputLoginUsername, inputLoginPin);
     labelWelcome.innerHTML = `Good Day, ${currentAccount.owner.split(' ')[0]}!`;
+    dateFunction();
+    setInterval(dateFunction, 1000);
     updateUI();
     containerApp.style.opacity = 1;
+    countdownTimer();
   }
 });
 
@@ -195,10 +233,10 @@ btnLoan.addEventListener('click', function (e) {
   inputLoanAmount.blur();
   setTimeout(() => {
     updateUI();
-  }, '2000');
+  }, 2000);
 });
 
-// BUTTON FUNCTIONALITIES
+// SORT MOVEMENT FUNCTIONALITY
 btnSort.addEventListener('click', function () {
   isSorted = !isSorted;
   displayMovement(account1);
