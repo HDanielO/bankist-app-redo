@@ -152,7 +152,6 @@ btnLogin.addEventListener('click', function (e) {
 
   // console.log(currentAccount);
   if (currentAccount.pin === Number(inputLoginPin.value)) {
-    console.log(currentAccount);
     resetInput(inputLoginUsername, inputLoginPin);
     labelWelcome.innerHTML = `Good Day, ${currentAccount.owner.split(' ')[0]}!`;
     updateUI();
@@ -186,10 +185,18 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
-// REQUEST LOAN
-
-
-
+// REQUEST LOAN FUNCTIONALITY
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const timeRequest = new Date().toISOString();
+  currentAccount.movements.push(Number(inputLoanAmount.value));
+  currentAccount.movementsDates.push(timeRequest);
+  inputLoanAmount.value = '';
+  inputLoanAmount.blur();
+  setTimeout(() => {
+    updateUI();
+  }, '2000');
+});
 
 // BUTTON FUNCTIONALITIES
 btnSort.addEventListener('click', function () {
