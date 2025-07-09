@@ -73,13 +73,9 @@ const inputClosePin = document.querySelector('.form__input--pin');
 let isSorted = false;
 
 //updateUI
-containerApp.style.opacity = 1;
-
 const displayBalance = account => {
   labelBalance.innerHTML = account.movements.reduce((acc, cur) => acc + cur, 0);
 };
-
-displayBalance(account1);
 
 const displaySumIn = account => {
   labelSumIn.innerHTML = account.movements
@@ -87,23 +83,17 @@ const displaySumIn = account => {
     .reduce((acc, cur) => acc + cur, 0);
 };
 
-displaySumIn(account1);
-
 const displaySumOut = account => {
   labelSumOut.innerHTML = account.movements
     .filter(val => val < 0)
     .reduce((acc, cur) => acc + cur, 0);
 };
 
-displaySumOut(account1);
-
 const displaySumInterest = account => {
   labelSumInterest.innerHTML =
     account.movements.reduce((acc, cur) => acc + cur, 0) *
     (account.interestRate / 100);
 };
-
-displaySumInterest(account1);
 
 const displayMovement = account => {
   containerMovements.innerHTML = '';
@@ -135,7 +125,33 @@ const displayMovement = account => {
   });
 };
 
-displayMovement(account1);
+// LOGIN FUNCTIONALITY
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  const currentAccount = accounts.find(
+    acc =>
+      `${acc.owner.split(' ')[0][0]}${
+        acc.owner.split(' ')[1][0]
+      }`.toLowerCase() === inputLoginUsername.value
+  );
+
+  // console.log(currentAccount);
+  if (currentAccount.pin === Number(inputLoginPin.value)) {
+    console.log(currentAccount);
+    inputLoginUsername.value = '';
+    inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    displayBalance(currentAccount);
+    displaySumIn(currentAccount);
+    displaySumOut(currentAccount);
+    displaySumInterest(currentAccount);
+    displayMovement(currentAccount);
+    labelWelcome.innerHTML = `Good Day, ${currentAccount.owner.split(' ')[0]}!`;
+
+    containerApp.style.opacity = 1;
+  }
+});
 
 // BUTTON FUNCTIONALITIES
 btnSort.addEventListener('click', function () {
