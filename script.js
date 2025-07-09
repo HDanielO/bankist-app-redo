@@ -71,6 +71,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 // STATES
 let isSorted = false;
+let currentAccount;
 
 //updateUI
 const displayBalance = account => {
@@ -125,10 +126,24 @@ const displayMovement = account => {
   });
 };
 
+const updateUI = function () {
+  displayBalance(currentAccount);
+  displaySumIn(currentAccount);
+  displaySumOut(currentAccount);
+  displaySumInterest(currentAccount);
+  displayMovement(currentAccount);
+};
+
+const resetInput = function (inputLeft, inputRight) {
+  inputLeft.value = '';
+  inputRight.value = '';
+  inputRight.blur();
+};
+
 // LOGIN FUNCTIONALITY
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
-  const currentAccount = accounts.find(
+  currentAccount = accounts.find(
     acc =>
       `${acc.owner.split(' ')[0][0]}${
         acc.owner.split(' ')[1][0]
@@ -138,20 +153,43 @@ btnLogin.addEventListener('click', function (e) {
   // console.log(currentAccount);
   if (currentAccount.pin === Number(inputLoginPin.value)) {
     console.log(currentAccount);
-    inputLoginUsername.value = '';
-    inputLoginPin.value = '';
-    inputLoginPin.blur();
-
-    displayBalance(currentAccount);
-    displaySumIn(currentAccount);
-    displaySumOut(currentAccount);
-    displaySumInterest(currentAccount);
-    displayMovement(currentAccount);
+    resetInput(inputLoginUsername, inputLoginPin);
     labelWelcome.innerHTML = `Good Day, ${currentAccount.owner.split(' ')[0]}!`;
-
+    updateUI();
     containerApp.style.opacity = 1;
   }
 });
+
+// TRANSFER MONEY FUNCTIONALITY
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const receiverAccount = accounts.find(
+    acc =>
+      `${acc.owner.split(' ')[0][0]}${
+        acc.owner.split(' ')[1][0]
+      }`.toLowerCase() === inputTransferTo.value
+  );
+
+  if (
+    receiverAccount.owner !== currentAccount.owner &&
+    Number(inputTransferAmount.value) > 0 &&
+    Number(inputTransferAmount.value) <=
+      currentAccount.movements.reduce((acc, cur) => acc + cur, 0)
+  ) {
+    const timeSent = new Date().toISOString();
+    receiverAccount.movements.push(Number(inputTransferAmount.value));
+    currentAccount.movements.push(-Number(inputTransferAmount.value));
+    receiverAccount.movementsDates.push(timeSent);
+    currentAccount.movementsDates.push(timeSent);
+    updateUI();
+    resetInput(inputTransferTo, inputTransferAmount);
+  }
+});
+
+// REQUEST LOAN
+
+
+
 
 // BUTTON FUNCTIONALITIES
 btnSort.addEventListener('click', function () {
