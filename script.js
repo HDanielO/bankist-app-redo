@@ -72,7 +72,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // STATES
 let isSorted = false;
 let currentAccount;
-let countdownTime = 600;
+let countdownTime = 10;
 
 //updateUI
 const displayBalance = account => {
@@ -198,9 +198,16 @@ const countdownTimer = function () {
   timer();
   const countdown = setInterval(() => {
     timer();
-    if (countdownTime === -1) {
+    if (countdownTime <= -1) {
       clearInterval(countdown);
       containerApp.style.opacity = 0;
+      labelWelcome.innerHTML = 'Log in to get started';
+      isSorted = false;
+      containerMovements.innerHTML = '';
+      labelSumInterest.innerHTML = '';
+      labelSumOut.innerHTML = '';
+      labelSumIn.innerHTML = '';
+      labelBalance.innerHTML = '';
     }
   }, 1000);
 };
@@ -227,7 +234,7 @@ btnLogin.addEventListener('click', function (e) {
         acc.owner.split(' ')[1][0]
       }`.toLowerCase() === inputLoginUsername.value
   );
-  if (currentAccount.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
     resetInput(inputLoginUsername, inputLoginPin);
     labelWelcome.innerHTML = `${greetings()}, ${
       currentAccount.owner.split(' ')[0]
@@ -235,6 +242,7 @@ btnLogin.addEventListener('click', function (e) {
     dateFunction();
     setInterval(dateFunction, 1000);
     updateUI();
+    countdownTime = 10;
     containerApp.style.opacity = 1;
     countdownTimer();
   }
@@ -283,4 +291,29 @@ btnLoan.addEventListener('click', function (e) {
 btnSort.addEventListener('click', function () {
   isSorted = !isSorted;
   displayMovement(account1);
+});
+
+// DELETE ACCOUNT FUNCTIONALITY
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value ===
+      `${currentAccount.owner.split(' ')[0][0]}${
+        currentAccount.owner.split(' ')[1][0]
+      }`.toLowerCase() &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const currentAccountIndex = accounts.indexOf(currentAccount);
+    accounts.splice(currentAccountIndex, 1);
+    // currentAccount;
+    resetInput(inputCloseUsername, inputClosePin);
+    containerMovements.innerHTML = '';
+    labelSumInterest.innerHTML = '';
+    labelSumOut.innerHTML = '';
+    labelSumIn.innerHTML = '';
+    labelBalance.innerHTML = '';
+    isSorted = false;
+    containerApp.style.opacity = 0;
+    labelWelcome.innerHTML = 'Log in to get started';
+  }
 });
