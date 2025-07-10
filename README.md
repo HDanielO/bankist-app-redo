@@ -25,6 +25,10 @@ This solo re-creation focuses on implementing the underlying logic and user inte
 
 ---
 
+> **⚠️ Note:** This site is **not responsive** and is designed for **desktop use only**. For the best experience, please use a desktop or laptop device.
+
+---
+
 ## 🚀 Features & Functionality
 
 ### 1. **User Login & Authentication**
