@@ -72,7 +72,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // STATES
 let isSorted = false;
 let currentAccount;
-let countdownTime = 10;
+let countdownTime = 600;
 
 //updateUI
 const displayBalance = account => {
@@ -103,7 +103,22 @@ const displayMovement = account => {
     ? account.movements.toSorted((a, b) => a - b)
     : account.movements;
   accMovements.forEach((mov, i) => {
-    const movDate = new Date(account.movementsDates[i]);
+    const currentDate = new Date().getTime() / (1000 * 3600 * 24);
+    const transDate =
+      new Date(account.movementsDates[i]).getTime() / (1000 * 3600 * 24);
+
+    let movDate;
+
+    if (currentDate - transDate < 1) {
+      movDate = `TODAY`;
+    } else if (currentDate - transDate === 1) {
+      movDate = `YESTERDAY`;
+    } else {
+      movDate = `${new Date(account.movementsDates[i]).getDate()}/${
+        new Date(account.movementsDates[i]).getMonth() + 1
+      }/${new Date(account.movementsDates[i]).getFullYear()} `;
+    }
+
     containerMovements.insertAdjacentHTML(
       'afterbegin',
       `<div class="movements__row">
@@ -116,9 +131,7 @@ const displayMovement = account => {
       }</div>
 
           <div class="movements__date">
-           ${movDate.getDate()}/${
-        movDate.getMonth() + 1
-      }/${movDate.getFullYear()} 
+           ${movDate} 
            </div>
 <div class="movements__value">${mov}</div>
         </div>
@@ -163,7 +176,6 @@ const timer = function () {
   let countdownSecond = (countdownTime % 60).toString().padStart(2, '0');
   labelTimer.innerHTML = `${countdownMinute}:${countdownSecond}`;
   countdownTime--;
-  console.log('test');
 };
 
 const countdownTimer = function () {
@@ -177,6 +189,19 @@ const countdownTimer = function () {
   }, 1000);
 };
 
+const greetings = function () {
+  const currentDate = new Date();
+  if (currentDate.getHours() < 12) {
+    return 'Good Morning';
+  } else if (currentDate.getHours() >= 12 && currentDate.getHours() < 18) {
+    return 'Good Afternoon';
+  } else if (currentDate.getHours() >= 18 && currentDate.getHours() < 19) {
+    return 'Good Evening';
+  } else if (currentDate.getHours() >= 19 && currentDate.getHours() <= 23) {
+    return 'Good Night';
+  }
+};
+
 // LOGIN FUNCTIONALITY
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -188,7 +213,9 @@ btnLogin.addEventListener('click', function (e) {
   );
   if (currentAccount.pin === Number(inputLoginPin.value)) {
     resetInput(inputLoginUsername, inputLoginPin);
-    labelWelcome.innerHTML = `Good Day, ${currentAccount.owner.split(' ')[0]}!`;
+    labelWelcome.innerHTML = `${greetings()}, ${
+      currentAccount.owner.split(' ')[0]
+    }!`;
     dateFunction();
     setInterval(dateFunction, 1000);
     updateUI();
