@@ -76,25 +76,38 @@ let countdownTime = 600;
 
 //updateUI
 const displayBalance = account => {
-  labelBalance.innerHTML = account.movements.reduce((acc, cur) => acc + cur, 0);
+  labelBalance.innerHTML = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(account.movements.reduce((acc, cur) => acc + cur, 0));
 };
 
 const displaySumIn = account => {
-  labelSumIn.innerHTML = account.movements
-    .filter(val => val > 0)
-    .reduce((acc, cur) => acc + cur, 0);
+  labelSumIn.innerHTML = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(
+    account.movements.filter(val => val > 0).reduce((acc, cur) => acc + cur, 0)
+  );
 };
 
 const displaySumOut = account => {
-  labelSumOut.innerHTML = account.movements
-    .filter(val => val < 0)
-    .reduce((acc, cur) => acc + cur, 0);
+  labelSumOut.innerHTML = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(
+    account.movements.filter(val => val < 0).reduce((acc, cur) => acc + cur, 0)
+  );
 };
 
 const displaySumInterest = account => {
-  labelSumInterest.innerHTML =
+  labelSumInterest.innerHTML = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(
     account.movements.reduce((acc, cur) => acc + cur, 0) *
-    (account.interestRate / 100);
+      (account.interestRate / 100)
+  );
 };
 
 const displayMovement = account => {
@@ -133,7 +146,10 @@ const displayMovement = account => {
           <div class="movements__date">
            ${movDate} 
            </div>
-<div class="movements__value">${mov}</div>
+<div class="movements__value">${new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'NGN',
+      }).format(mov)}</div>
         </div>
         `
     );
@@ -157,15 +173,15 @@ const resetInput = function (inputLeft, inputRight) {
 // CLOCK AND DATE
 const dateFunction = function () {
   const currentDate = new Date();
-  labelDate.innerHTML = `${currentDate.getDate()}/${
-    currentDate.getMonth() + 1
-  }/${currentDate.getFullYear()}, ${currentDate
-    .getHours()
-    .toString()
-    .padStart(2, '0')}:${currentDate
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}:${currentDate.getSeconds().toString().padStart(2, '0')}`;
+  labelDate.innerHTML = new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+  }).format(currentDate);
 };
 
 // TIMER
