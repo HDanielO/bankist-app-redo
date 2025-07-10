@@ -72,7 +72,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 // STATES
 let isSorted = false;
 let currentAccount;
-let countdownTime = 10;
+let countdownTime = 600;
 
 //updateUI
 const displayBalance = account => {
@@ -242,7 +242,7 @@ btnLogin.addEventListener('click', function (e) {
     dateFunction();
     setInterval(dateFunction, 1000);
     updateUI();
-    countdownTime = 10;
+    countdownTime = 600;
     containerApp.style.opacity = 1;
     countdownTimer();
   }
